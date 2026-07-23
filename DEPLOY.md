@@ -6,18 +6,17 @@ Upload every file in this folder to the ROOT of your GitHub repo
 The `app.py` in this zip auto-detects whether you have a flat layout
 or a proper `engine/` package layout, so it works either way.
 
-## What changed vs the previous zip
-- New **Data interval** dropdown in the sidebar (1d / 1h / 30m / 15m / 5m / 1m).
-- All 7 markets + composite + 3 forecast horizons now run on the
-  selected interval (was daily-only before).
-- yfinance lookback limits are respected per interval.
-- Backtest holding period is now in **bars** (was days).
-- Header shows what each horizon means in the current timeframe.
+## What was fixed in this build
+- Added try/except to the `INTERVAL_CONFIG` import in `config.py` so it
+  works in both flat and package layouts.  This fixes the
+  `ImportError: attempted relative import with no known parent package`
+  error you saw on Streamlit Cloud.
+- All other engine modules already had this fix from the previous build.
 
 ## Files
 - `app.py`              - Streamlit entry point
-- `config.py`           - Weights & data-source config (with interval field)
-- `data.py`             - YFinance + Twelve Data fetchers (interval-aware)
+- `config.py`           - Weights, periods, data-source, **interval**
+- `data.py`             - YFinance + Twelve Data (interval-aware)
 - `indicators.py`       - EMA / RSI / ROC
 - `scoring.py`          - 7-market composite engine
 - `backtest.py`         - Long-flat backtest
@@ -26,8 +25,10 @@ or a proper `engine/` package layout, so it works either way.
 - `DEPLOY.md`           - This file
 
 ## Steps
-1. In your GitHub repo, delete the old `__init__.py` and `config.toml`
-   at the root (unused / ignored).
-2. Replace all .py files with the ones in this folder.
-3. On share.streamlit.io the entry point is `app.py`.
-4. Pick your interval in the sidebar (start with `1h` for intraday).
+1. In your GitHub repo, **replace** these 7 files with the ones in this folder:
+   `app.py`, `config.py`, `data.py`, `scoring.py`, `backtest.py`,
+   `indicators.py`, `requirements.txt`.
+2. The old `__init__.py` and root `config.toml` are harmless but unused —
+   you can leave or delete them.
+3. Streamlit Cloud will auto-rebuild on push.  If it doesn't, click
+   **Reboot** in the app dashboard.

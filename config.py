@@ -109,7 +109,11 @@ class Config:
 
             # --- Data interval (intraday / daily toggle) --------------------
             # Lazy import to avoid circular import at module load time.
-            from .data import INTERVAL_CONFIG
+            # Works in both package and flat layouts.
+            try:
+                from .data import INTERVAL_CONFIG
+            except ImportError:
+                from data import INTERVAL_CONFIG
             interval_opts = list(INTERVAL_CONFIG.keys())
             current_idx = interval_opts.index(cfg.interval) if cfg.interval in interval_opts else 0
             cfg.interval = st.selectbox(
